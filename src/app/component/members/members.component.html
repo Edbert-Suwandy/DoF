@@ -1,0 +1,38 @@
+<form>
+    <label for="search">Member Name: </label>
+    <select (change)="handleSelectionClick($event)">
+        <option *ngFor="let member of allMembers$ | async" [value]="member._id">{{member.Ultimate_Recipient}}</option>
+    </select>
+    <button *ngIf="is_admin()">Add New</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Date of Offer</th>
+            <th>Description of Offer</th>
+            <th>Details of Contract</th>
+            <th>Estimated Gift Value</th>
+            <th>Offered From</th>
+            <th>Offered To</th>
+            <th>Reason for Offer</th>
+            <th>Action Taken</th>
+            <th *ngIf="is_admin()">Delete</th>
+            <th *ngIf="is_admin()">Update</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let gift of selectedMemberGifts$ | async">
+            <td>{{gift.Date_of_Offer}}</td>
+            <td>{{gift.Description_of_offer}}</td>
+            <td>{{gift.Details_of_contract}}</td>
+            <td>{{gift.Estimated_Gift_Value}}</td>
+            <td>{{gift.Offered_From}}</td>
+            <td>{{gift.Offered_to}}</td>
+            <td>{{gift.Reason_for_offer}}</td>
+            <td>{{gift.Action_Taken}}</td>
+            <td *ngIf="is_admin()"><button (click)="deleteHandler($event)" [value]="gift.hash">Delete</button></td>
+            <td *ngIf="is_admin()"><button>Update</button></td>
+        </tr>
+    </tbody>
+</table>
