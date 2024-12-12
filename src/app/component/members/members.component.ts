@@ -79,8 +79,15 @@ export class MembersComponent implements OnInit {
 
   deleteGift(hash: string) {
     const memberId = this.selectedMemberId.getValue();
-    this.dataService.deleteMember(memberId, hash).subscribe(() => {
+    this.dataService.deleteMember(memberId, hash, this.authService.get_cookie("token")).subscribe(() => {
       this.fetchMemberGifts(memberId);
     });
+  }
+  
+  editHandler(event: Event) {
+    const button = event.currentTarget as HTMLButtonElement;
+    const value = button.value;
+    const [hash, field] = value.split('|');
+    console.log(hash, field);
   }
 }
