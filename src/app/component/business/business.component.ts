@@ -17,10 +17,10 @@ export class BusinessComponent implements OnInit {
   allB$: Observable<BusinessForm[]> = this.bSubject.asObservable();
 
   private selectedBName = new BehaviorSubject<string>("");
-  selectedBaName$: Observable<string> = this.selectedBName.asObservable();
+  selectedBName$: Observable<string> = this.selectedBName.asObservable();
 
   private selectedBGifts = new BehaviorSubject<Gift[]>([]);
-  selectedBaGifts$: Observable<Gift[]> = this.selectedBGifts.asObservable();
+  selectedBGifts$: Observable<Gift[]> = this.selectedBGifts.asObservable();
 
   is_admin:Signal<boolean>= computed(() => this.authService.is_admin());
 

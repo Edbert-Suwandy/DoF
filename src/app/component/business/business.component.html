@@ -22,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let gift of selectedBaGifts$ | async">
+        <tr *ngFor="let gift of selectedBGifts$ | async">
             <td>
                 {{gift.Date_of_Offer}}
                 <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash+ '|' + 'Date_of_Offer'">
