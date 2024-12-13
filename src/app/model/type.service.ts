@@ -2,6 +2,11 @@ export type token = {
     token: string;
 }
 
+export type MemberForm = {
+    _id: string;
+    Ultimate_Recipient: string;
+}
+
 export type Member = {
     Business_Area: string;
     Ultimate_Recipient: string;
@@ -23,10 +28,6 @@ export type Gift = {
     hash: string
 }
 
-export type MemberForm = {
-    _id: string;
-    Ultimate_Recipient: string;
-}
 
 export type BaForm = {
     Business_Area: string;
@@ -36,13 +37,6 @@ export type Ba = {
     Business_Area: string;
     Total_Gifts: number;
     Gifts: Gift[];
-}
-
-export type MemberGifts = {
-    Gifts: Gift[];
-    Total_Gifts: number;
-    Total_Accepted_Gifts: number;
-    Ultimate_Recipient: string;
 }
 
 export type BusinessForm = {

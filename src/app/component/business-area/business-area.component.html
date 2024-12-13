@@ -2,7 +2,7 @@
     <form>
         <label for="search">Member Name: </label>
         <select (change)="handleSelectionChange($event)">
-            <option *ngFor="let ba of allBa$ | async" [value]="ba.Business_Area">{{ba.Business_Area}}</option>
+            <option *ngFor="let ba of allBa()">{{ba.Business_Area}}</option>
         </select>
     </form>
     <button *ngIf="is_admin()" (click)="addHandler()">Add</button>
@@ -22,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let gift of selectedBaGifts$ | async">
+        <tr *ngFor="let gift of selectedBaGifts()">
             <td>{{gift.Date_of_Offer}}</td>
             <td>{{gift.Description_of_offer}}</td>
             <td>{{gift.Details_of_contract}}</td>

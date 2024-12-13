@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MemberForm, Ba, MemberGifts, BaForm, BusinessForm, Business } from '../model/type.service';
+import { MemberForm, Ba, Member, BaForm, BusinessForm, Business } from '../model/type.service';
 import { baseUrl } from '../app.global';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class DataService {
   }
 
   getMember(id: string) {
-    return this.http.get<MemberGifts[]>(`${this.url}/member/${id}`);
+    return this.http.get<Member>(`${this.url}/member/${id}`);
   }
 
   deleteGift(id: string, gift: string, token: string) {

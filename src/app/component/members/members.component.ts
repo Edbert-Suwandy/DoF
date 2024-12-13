@@ -2,111 +2,97 @@ import { Component, computed, signal, Signal } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { DataService as authService} from '../../service/auth.service';
-import { MemberForm, Gift, MemberGifts } from '../../model/type.service';
-import { NgForOf, NgIf, AsyncPipe } from '@angular/common';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { MemberForm, Gift, Member } from '../../model/type.service';
+import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-members',
   standalone: true,
-  imports: [NgForOf, NgIf, AsyncPipe],
+  imports: [NgForOf, NgIf],
   templateUrl: './members.component.html',
   styleUrl: './members.component.css'
 })
 
 export class MembersComponent implements OnInit {
-  private membersSubject = new BehaviorSubject<MemberForm[]>([]);
-  allMembers$: Observable<MemberForm[]> = this.membersSubject.asObservable();
+  allMembers = signal<MemberForm[]>([]);
+  selectedMemberId = signal<string>("");
+  selectedMemberGifts = signal<Gift[]>([]);
 
-  private selectedMemberId = new BehaviorSubject<string>("");
-  selectedMemberId$: Observable<string> = this.selectedMemberId.asObservable();
-
-  private selectedMemberGifts = new BehaviorSubject<Gift[]>([]);
-  selectedMemberGifts$: Observable<Gift[]> = this.selectedMemberGifts.asObservable();
-  
-  is_admin:Signal<boolean>= computed(() => this.authService.is_admin());
+  is_admin: Signal<boolean> = computed(() => this.authService.is_admin());
 
   constructor(private dataService: DataService, private authService: authService) {}
 
   ngOnInit(): void {
-    this.listMember();
-    this.setInitialSelectedMember();
+    console.log("ngOnInit called");
+    this.dataService.listMembers().subscribe((members: MemberForm[]) => {
+      this.allMembers.set(members);
+
+      const member_id = members[0]._id;
+      this.dataService.getMember(member_id).subscribe((member: Member) => {
+        this.selectedMemberId.set(member._id);
+        this.selectedMemberGifts.set(member.Gifts);
+      });
+    });
   }
 
   listMember() {
     this.dataService.listMembers().subscribe((members: MemberForm[]) => {
-      this.membersSubject.next(members);
+      console.log("Members fetched: ", members);
+      this.allMembers.set(members);
     });
   }
-  
+
   handleSelectionClick(e: any) {
     if (e === null) {
       return;
     }
-
-    this.setSelectedMember(e.target.value);
+    this.selectedMemberId.set(e.target.value);
+    this.dataService.getMember(e.target.value).subscribe((member: Member) => {
+      this.selectedMemberGifts.set(member.Gifts);
+    })
   }
 
-  setInitialSelectedMember() {
-    this.allMembers$.subscribe(members => {
-      if (members.length > 0) {
-        const memberId = this.authService.get_cookie('member_id');
-        if (memberId) {
-          this.setSelectedMember(memberId);
-        } else {
-          this.setSelectedMember(members[0]._id);
-        }
-      }
+  deleteHandler() {
+    this.dataService.deleteMember(this.selectedMemberId(), this.authService.get_cookie("token")).subscribe(() => {
+      this.dataService.listMembers().subscribe((members: MemberForm[]) => {
+        this.allMembers.set(members);
+        this.selectedMemberId.set(this.allMembers()[0]._id);
+        this.dataService.getMember(this.selectedMemberId()).subscribe((member: Member) => {
+          this.selectedMemberGifts.set(member.Gifts);
+        });
+      });
     });
   }
 
-  setSelectedMember(id: string) {
-    this.authService.set_cookie('member_id', id);
-    this.selectedMemberId.next(id);
-    this.fetchMemberGifts(id);
-  }
-
-  fetchMemberGifts(id: string) {
-    this.dataService.getMember(id).subscribe((members: MemberGifts[]) => {
-      const gifts = members.flatMap(member => member.Gifts);
-      this.selectedMemberGifts.next(gifts);
+  deleteGiftHandler(event: any) {
+    this.dataService.deleteGift(this.selectedMemberId(), event.currentTarget.value, this.authService.get_cookie("token")).subscribe(() => {
+      console.log("Gift deleted");
+      this.dataService.getMember(this.selectedMemberId()).subscribe((member: Member) => {
+        this.selectedMemberGifts.set(member.Gifts);
+      });
     });
   }
 
-  deleteHandler(e: any) {
-    this.deleteGift(e.target.value);
-  }
 
-  deleteGift(hash: string) {
-    const memberId = this.selectedMemberId.getValue();
-    this.dataService.deleteGift(memberId, hash, this.authService.get_cookie("token")).subscribe(() => {
-      this.fetchMemberGifts(memberId);
-    });
-  }
-  
   editHandler(event: Event) {
     const button = event.currentTarget as HTMLButtonElement;
     const value = button.value;
     const [hash, field] = value.split('|');
-    console.log("hash: ",hash, "field: ", field);
+    console.log("hash: ", hash, "field: ", field);
     let new_value = prompt('Enter new value', field);
     if (!new_value) {
       alert("Value is empty");
       return;
     }
 
-    this.dataService.editGift(this.selectedMemberId.getValue(), field, new_value, hash, this.authService.get_cookie("token")).subscribe(() => {
-      this.fetchMemberGifts(this.selectedMemberId.getValue());
-    });
-
-    
-  }
-
-  handleDeleteMember() {
-    const memberId = this.selectedMemberId.getValue();
-    this.dataService.deleteMember(memberId, this.authService.get_cookie("token")).subscribe(() => {
-        this.listMember();
-        this.setInitialSelectedMember(); 
+    this.dataService.editGift(this.selectedMemberId(), field, new_value, hash, this.authService.get_cookie("token")).subscribe(() => {
+      this.dataService.listMembers().subscribe((members: MemberForm[]) => {
+        this.allMembers.set(members);
+        this.selectedMemberId.set(members[0]._id);
+        this.dataService.getMember(members[0]._id).subscribe((member: Member) => {
+          this.selectedMemberGifts.set(member.Gifts);
+        });
+      });
     });
   }
 }
