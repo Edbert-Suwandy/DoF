@@ -5,6 +5,7 @@
             <option *ngFor="let b of allB$ | async" [value]="b._id">{{b._id}}</option>
         </select>
     </form>
+    <td *ngIf="is_admin()"><button (click)="renameHandler($event)">Rename</button></td>
 </div>
 
 <table>
@@ -18,57 +19,18 @@
             <th>Offered To</th>
             <th>Reason for Offer</th>
             <th>Action Taken</th>
-            <th *ngIf="is_admin()">Delete</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let gift of selectedBGifts$ | async">
-            <td>
-                {{gift.Date_of_Offer}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash+ '|' + 'Date_of_Offer'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Description_of_offer}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Description_of_offer'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Details_of_contract}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Details_of_contract'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Estimated_Gift_Value}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Estimated_Gift_Value'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Offered_From}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Offered_From'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>{{gift.Offered_to}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Offered_to'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>{{gift.Reason_for_offer}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Reason_for_offer'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>{{gift.Action_Taken}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Action_Taken'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td *ngIf="is_admin()"><button (click)="deleteHandler($event)" [value]="gift.hash">Delete</button></td>
+            <td>{{gift.Date_of_Offer}}</td>
+            <td>{{gift.Description_of_offer}}</td>
+            <td>{{gift.Details_of_contract}}</td>
+            <td>{{gift.Estimated_Gift_Value}}</td>
+            <td>{{gift.Offered_From}}</td>
+            <td>{{gift.Offered_to}}</td>
+            <td>{{gift.Reason_for_offer}}</td>
+            <td>{{gift.Action_Taken}}</td>
         </tr>
     </tbody>
 </table>

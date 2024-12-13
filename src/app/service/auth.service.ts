@@ -35,7 +35,8 @@ export class DataService {
   }
 
   set_cookie(key: string, value: string) {
-    document.cookie = `${key}=${value}; path=/; SameSite=Lax;`;
+    const expires = new Date(Date.now() + 30 * 60 * 1000).toUTCString(); // 30 minutes from now
+    document.cookie = `${key}=${value}; expires=${expires}; path=/; SameSite=Lax;`;
   }
 
   get_cookie(key: string) {

@@ -88,7 +88,18 @@ export class MembersComponent implements OnInit {
     const button = event.currentTarget as HTMLButtonElement;
     const value = button.value;
     const [hash, field] = value.split('|');
-    console.log(hash, field);
+    console.log("hash: ",hash, "field: ", field);
+    let new_value = prompt('Enter new value', field);
+    if (!new_value) {
+      alert("Value is empty");
+      return;
+    }
+
+    this.dataService.editGift(this.selectedMemberId.getValue(), field, new_value, hash, this.authService.get_cookie("token")).subscribe(() => {
+      this.fetchMemberGifts(this.selectedMemberId.getValue());
+    });
+
+    
   }
 
   handleDeleteMember() {

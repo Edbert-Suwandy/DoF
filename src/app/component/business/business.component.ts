@@ -68,13 +68,11 @@ export class BusinessComponent implements OnInit {
     this.setSelectedB(selected);
   }
 
-  editHandler(e: any) {
-    console.log('Edit gift with hash:',);
-    // Implement edit logic here
+  renameHandler(e: any) {
+    
   }
 
   deleteHandler(e: any) {
-    console.log('Delete gift with hash:');
-    // Implement delete logic here
+
   }
 }

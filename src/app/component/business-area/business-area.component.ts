@@ -74,8 +74,27 @@ export class BusinessAreaComponent implements OnInit {
     // Implement edit logic here
   }
 
-  deleteHandler(e: any) {
-    console.log('Delete gift with hash:');
-    // Implement delete logic here
+  renameHandler() {
+    const new_name = prompt('Enter new name');
+    if (!new_name) {
+      alert("Name is empty")
+      return;
+    }
+
+    let token = this.authService.get_cookie('token');
+    if (!token) {
+      alert('You need to be logged in to rename a business area');
+      return;
+    }
+
+    console.log(token)
+
+    this.dataService.renameBa(this.selectedBaName.getValue(), new_name, token).subscribe(() => {
+      console.log('Renamed business area');
+    });
+  }
+  
+  addHandler() {
+    console.log('Adding gift to: ', this.selectedBaName.getValue());
   }
 }
