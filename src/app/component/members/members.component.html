@@ -1,10 +1,13 @@
-<form>
-    <label for="search">Member Name: </label>
-    <select (change)="handleSelectionClick($event)">
-        <option *ngFor="let member of allMembers$ | async" [value]="member._id">{{member.Ultimate_Recipient}}</option>
-    </select>
+<div>
+    <form>
+        <label for="search">Member Name: </label>
+        <select (change)="handleSelectionClick($event)">
+            <option *ngFor="let member of allMembers$ | async" [value]="member._id">{{member.Ultimate_Recipient}}</option>
+        </select>
+    </form>
     <button *ngIf="is_admin()">Add New</button>
-</form>
+    <button *ngIf="is_admin()" (click)="handleDeleteMember()">Delete Member</button>
+</div>
 
 <table>
     <thead>

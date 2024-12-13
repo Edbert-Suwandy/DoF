@@ -31,11 +31,11 @@ export class DataService {
    }
 
   purge_cookie(key: string) {
-    document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    document.cookie = `${key}=; expires=Thu; SameSite=Lax; 01 Jan 1970 00:00:00 UTC; path=/;`;
   }
 
   set_cookie(key: string, value: string) {
-    document.cookie = `${key}=${value}; path=/; sameSite=strict;`;
+    document.cookie = `${key}=${value}; path=/; SameSite=Lax;`;
   }
 
   get_cookie(key: string) {

@@ -79,7 +79,7 @@ export class MembersComponent implements OnInit {
 
   deleteGift(hash: string) {
     const memberId = this.selectedMemberId.getValue();
-    this.dataService.deleteMember(memberId, hash, this.authService.get_cookie("token")).subscribe(() => {
+    this.dataService.deleteGift(memberId, hash, this.authService.get_cookie("token")).subscribe(() => {
       this.fetchMemberGifts(memberId);
     });
   }
@@ -89,5 +89,13 @@ export class MembersComponent implements OnInit {
     const value = button.value;
     const [hash, field] = value.split('|');
     console.log(hash, field);
+  }
+
+  handleDeleteMember() {
+    const memberId = this.selectedMemberId.getValue();
+    this.dataService.deleteMember(memberId, this.authService.get_cookie("token")).subscribe(() => {
+        this.listMember();
+        this.setInitialSelectedMember(); 
+    });
   }
 }
