@@ -5,6 +5,12 @@
             <option *ngFor="let ba of allBa()">{{ba.Business_Area}}</option>
         </select>
     </form>
+    <form>
+        <label for="from">from: </label>
+        <input type="date" (change)="handleFromChange($event)">
+        <label for="to">to: </label>
+        <input type="date" (change)="handleToChange($event)">
+    </form>
     <button *ngIf="is_admin()" (click)="addHandler()">Add</button>
     <button *ngIf="is_admin()" (click)="renameHandler()">Rename</button>
 </div>

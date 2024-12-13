@@ -5,7 +5,13 @@
             <option *ngFor="let bg of allB()" [value]="bg._id">{{bg._id}}</option>
         </select>
     </form>
-    <td *ngIf="is_admin()"><button (click)="renameHandler($event)">Rename</button></td>
+    <form>
+        <label for="from">from: </label>
+        <input type="date" (change)="handleFromChange($event)">
+        <label for="to">to: </label>
+        <input type="date" (change)="handleToChange($event)">
+    </form>
+    <td *ngIf="is_admin()"><button (click)="renameHandler()">Rename</button></td>
 </div>
 
 <table>

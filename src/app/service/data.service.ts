@@ -58,16 +58,28 @@ export class DataService {
     return this.http.get<BaForm[]>(`${this.url}/businessArea/list`);
   }
 
-  getBusinessArea(name: string){
-    return this.http.get<Ba>(`${this.url}/businessArea/${name}`);
+  getBusinessArea(name: string, from?: string, to?: string) {
+    if (!from) {
+      from = '1/1/1970';
+    }
+    if (!to) {
+      to = '30/1/2090';
+    }
+    return this.http.get<Ba>(`${this.url}/businessArea/${name}?start=${from}&end=${to}`);
   }
 
   listBusiness() {
     return this.http.get<BusinessForm[]>(`${this.url}/business/list`);
   }
 
-  getBusiness(name: string) {
-    return this.http.get<Business>(`${this.url}/business/${name}`);
+  getBusiness(name: string, from?: string, to?: string) {
+    if (!from) {
+      from = '1/1/1970';
+    }
+    if (!to) {
+      to = '30/1/2090';
+    }
+    return this.http.get<Business>(`${this.url}/business/${name}?start=${from}&end=${to}`);
   }
 
   uploadFile(file: File, token: string) {
@@ -87,6 +99,13 @@ export class DataService {
     const headers = new HttpHeaders().set("x-access-header", token);
 
     return this.http.patch(`${this.url}/businessArea/${old_name}/rename?new_name=${new_name}`, {}, { headers });
+  }
+
+  renameB(old_name: string, new_name: string, token: string) {
+    token = token.trim();
+    const headers = new HttpHeaders().set("x-access-header", token);
+
+    return this.http.patch(`${this.url}/business/${old_name}/rename?new_name=${new_name}`, {}, { headers });
   }
 
 }
