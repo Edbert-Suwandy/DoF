@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MemberForm, Ba, Member, BaForm, BusinessForm, Business } from '../model/type';
 import { baseUrl } from '../app.global';
+import { defaultEquals } from '@angular/core/primitives/signals';
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +16,17 @@ export class DataService {
     return this.http.get<MemberForm[]>(`${this.url}/member/list`);
   }
 
-  getMember(id: string) {
-    return this.http.get<Member>(`${this.url}/member/${id}`);
+  getMember(id: string, from?: string, to?: string) {
+    if (!from) {
+      from = '1/1/1970';
+    }
+    if (!to) {
+      to = '30/1/2090';
+    }
+    return this.http.get<Member>(`${this.url}/member/${id}?start=${from}&end=${to}`);
   }
 
   deleteGift(id: string, gift: string, token: string) {
-    // get auth from cookies
-    document.cookie.split(';').forEach((cookie) => {
-      let [key, value] = cookie.split('=');
-      if (key.trim() === 'token') {
-        token = value.trim();
-      }
-    });
-
     const headers = new HttpHeaders().set('x-access-header', token);
     console.log(headers.get('x-access-header'));
     console.log(`${this.url}/member/${id}/gift/${gift}/delete`);

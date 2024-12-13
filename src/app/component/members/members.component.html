@@ -5,6 +5,12 @@
             <option *ngFor="let member of allMembers()" [value]="member._id">{{member.Ultimate_Recipient}}</option>
         </select>
     </form>
+    <form>
+        <label for="search">from: </label>
+        <input type="date" (change)="handleFromChange($event)">
+        <label for="search">to: </label>
+        <input type="date" (change)="handleToChange($event)">
+    </form>
     <button *ngIf="is_admin()">Add New</button>
     <button *ngIf="is_admin()" (click)="deleteHandler()">Delete Member</button>
 </div>
