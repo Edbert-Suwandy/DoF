@@ -1,8 +1,8 @@
 import { OnInit, Signal, computed, Component, signal } from '@angular/core';
 import { DataService } from '../../service/data.service';
-import { Ba, BaForm, Gift} from '../../model/type.service';
+import { Ba, BaForm, Gift} from '../../model/type';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DataService as AuthService } from '../../service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { NgForOf, AsyncPipe, NgIf } from '@angular/common';
 
 

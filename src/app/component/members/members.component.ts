@@ -1,8 +1,8 @@
 import { Component, computed, signal, Signal } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { DataService } from '../../service/data.service';
-import { DataService as authService} from '../../service/auth.service';
-import { MemberForm, Gift, Member } from '../../model/type.service';
+import { AuthService } from '../../service/auth.service';
+import { MemberForm, Gift, Member } from '../../model/type';
 import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
@@ -20,7 +20,7 @@ export class MembersComponent implements OnInit {
 
   is_admin: Signal<boolean> = computed(() => this.authService.is_admin());
 
-  constructor(private dataService: DataService, private authService: authService) {}
+  constructor(private dataService: DataService, private authService: AuthService) {}
 
   ngOnInit(): void {
     console.log("ngOnInit called");
@@ -72,7 +72,6 @@ export class MembersComponent implements OnInit {
       });
     });
   }
-
 
   editHandler(event: Event) {
     const button = event.currentTarget as HTMLButtonElement;

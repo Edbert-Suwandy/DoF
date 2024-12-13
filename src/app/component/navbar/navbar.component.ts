@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { DataService as AuthService} from '../../service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { OnInit } from '@angular/core';
 import { DataService } from '../../service/data.service';
 

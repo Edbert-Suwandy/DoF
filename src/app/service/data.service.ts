@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MemberForm, Ba, Member, BaForm, BusinessForm, Business } from '../model/type.service';
+import { MemberForm, Ba, Member, BaForm, BusinessForm, Business } from '../model/type';
 import { baseUrl } from '../app.global';
 
 @Injectable({

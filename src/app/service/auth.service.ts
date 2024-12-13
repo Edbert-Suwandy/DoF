@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { baseUrl } from '../app.global';
-import { token } from '../model/type.service';
+import { token } from '../model/type';
 import {jwtDecode, JwtPayload} from 'jwt-decode';
 
 interface ExtendedJwtPayload extends JwtPayload {
@@ -13,7 +13,7 @@ interface ExtendedJwtPayload extends JwtPayload {
   providedIn: 'root'
 })
 
-export class DataService {
+export class AuthService {
   readonly url = `${baseUrl}/api/v1/admin`;
 
   is_logged_in = signal<boolean>(false);

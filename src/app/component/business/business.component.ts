@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, Signal, signal } from '@angular/core';
 import { DataService } from '../../service/data.service';
-import { DataService as AuthService } from '../../service/auth.service';
-import { BusinessForm, Gift, Business } from '../../model/type.service';
+import { AuthService } from '../../service/auth.service';
+import { BusinessForm, Gift, Business } from '../../model/type';
 import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
