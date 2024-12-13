@@ -4,13 +4,15 @@ import { DataService } from '../../service/data.service';
 import { AuthService } from '../../service/auth.service';
 import { MemberForm, Gift, Member } from '../../model/type';
 import { NgForOf, NgIf } from '@angular/common';
-import { ThisReceiver } from '@angular/compiler';
-import { isEmpty } from 'rxjs';
+import { AgGridAngular } from 'ag-grid-angular';
+import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-members',
   standalone: true,
-  imports: [NgForOf, NgIf],
+  imports: [NgForOf, NgIf, AgGridAngular],
   templateUrl: './members.component.html',
   styleUrl: './members.component.css'
 })
@@ -19,8 +21,21 @@ export class MembersComponent implements OnInit {
   allMembers = signal<MemberForm[]>([]);
   selectedMemberId = signal<string>("");
   selectedMemberGifts = signal<Gift[]>([]);
+
   from = signal<string>("1/1/1970");
   to = signal<string>("30/1/2090");
+  rowData = computed(() => this.selectedMemberGifts());
+
+  headings:Signal<ColDef[]> = computed(() => [
+    { headerName: 'Date of Offer', field: 'Date_of_Offer', sortable: true, filter: true, editable: this.is_admin() },
+    { headerName: 'Offered To', field: 'Offered_to', sortable: true, filter: true, editable: this.is_admin() },
+    { headerName: 'Offered From', field: 'Offered_From', sortable: true, filter: true, editable: this.is_admin() },
+    { headerName: 'Description of offer', field: 'Description_of_offer', sortable: false, filter: false, editable: this.is_admin() },
+    { headerName: 'Reason of offer', field: 'Reason_for_offer', sortable: false, filter: false, editable: this.is_admin() },
+    { headerName: 'Details of contract', field: 'Details_of_contract', sortable: false, filter: false, editable: this.is_admin() },
+    { headerName: 'Estimated Gift Value', field: 'Estimated_Gift_Value', sortable: true, filter: true, editable: this.is_admin() },
+    { headerName: 'Action Taken', field: 'Action_Taken', sortable: true, filter: true , editable: this.is_admin()},
+  ]);
 
   handleFromChange(e: any) {
     let selected = e.target.value;
@@ -121,17 +136,20 @@ export class MembersComponent implements OnInit {
     });
   }
 
-  editHandler(event: Event) {
-    const button = event.currentTarget as HTMLButtonElement;
-    const value = button.value;
-    const [hash, field] = value.split('|');
-    console.log("hash: ", hash, "field: ", field);
-    let new_value = prompt('Enter new value', field);
-    if (!new_value) {
-      alert("Value is empty");
-      return;
-    }
+  handleReady($event: any) {
+    console.log("Ag-grid ready");
+    this.rowData();
+  }
 
+  handleRowEditingStopped(event: any) {
+    let field = (event.colDef.field);
+    console.log(event.data[field]);
+    console.log(event.data.hash);
+
+    this.editHandler(field, event.data[field], event.data.hash);
+  }
+
+  editHandler(field: string, new_value: string, hash: string) {
     this.dataService.editGift(this.selectedMemberId(), field, new_value, hash, this.authService.get_cookie("token")).subscribe(() => {
       this.dataService.listMembers().subscribe((members: MemberForm[]) => {
         this.allMembers.set(members);

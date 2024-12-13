@@ -14,69 +14,11 @@
     <button *ngIf="is_admin()">Add New</button>
     <button *ngIf="is_admin()" (click)="deleteHandler()">Delete Member</button>
 </div>
-
-<table>
-    <thead>
-        <tr>
-            <th>Date of Offer</th>
-            <th>Description of Offer</th>
-            <th>Details of Contract</th>
-            <th>Estimated Gift Value</th>
-            <th>Offered From</th>
-            <th>Offered To</th>
-            <th>Reason for Offer</th>
-            <th>Action Taken</th>
-            <th *ngIf="is_admin()">Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let gift of selectedMemberGifts()">
-            <td>
-                {{gift.Date_of_Offer}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash+ '|' + 'Date_of_Offer'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Description_of_offer}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Description_of_offer'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Details_of_contract}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Details_of_contract'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Estimated_Gift_Value}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Estimated_Gift_Value'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>
-                {{gift.Offered_From}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Offered_From'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>{{gift.Offered_to}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Offered_to'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>{{gift.Reason_for_offer}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Reason_for_offer'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td>{{gift.Action_Taken}}
-                <button *ngIf="is_admin()" (click)="editHandler($event)" [value]="gift.hash + '|' + 'Action_Taken'">
-                    <img src="../../../assets/edit.png" alt="Edit">
-                </button>
-            </td>
-            <td *ngIf="is_admin()"><button (click)="deleteGiftHandler($event)" [value]="gift.hash">Delete</button></td>
-        </tr>
-    </tbody>
-</table>
+<ag-grid-angular
+  style="width: 100%; height: 500px;"
+  class="ag-theme-alpine"
+  [rowData]="rowData()"
+  [columnDefs]="headings()"
+  (gridReady)="handleReady($event)"
+  (cellValueChanged)="handleRowEditingStopped($event)"
+  ></ag-grid-angular>

@@ -3,11 +3,15 @@ import { DataService } from '../../service/data.service';
 import { AuthService } from '../../service/auth.service';
 import { BusinessForm, Gift, Business } from '../../model/type';
 import { NgForOf, NgIf } from '@angular/common';
+import { ColDef, AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-business',
   standalone: true,
-  imports: [NgForOf, NgIf],
+  imports: [NgForOf, NgIf, AgGridAngular],
   templateUrl: './business.component.html',
   styleUrl: './business.component.css'
 })
@@ -17,6 +21,22 @@ export class BusinessComponent implements OnInit {
   selectedBGifts = signal<Gift[]>([]);
   from = signal<string>("1/1/1970");
   to = signal<string>("30/1/2090");
+
+  headings:Signal<ColDef[]> = computed(() => [
+    { headerName: 'Date of Offer', field: 'Date_of_Offer', sortable: true, filter: true, editable: false },
+    { headerName: 'Offered To', field: 'Offered_to', sortable: true, filter: true, editable: false },
+    { headerName: 'Offered From', field: 'Offered_From', sortable: true, filter: true, editable: false },
+    { headerName: 'Description of offer', field: 'Description_of_offer', sortable: false, filter: false, editable: false },
+    { headerName: 'Reason of offer', field: 'Reason_for_offer', sortable: false, filter: false, editable: false },
+    { headerName: 'Details of contract', field: 'Details_of_contract', sortable: false, filter: false, editable: false },
+    { headerName: 'Estimated Gift Value', field: 'Estimated_Gift_Value', sortable: true, filter: true, editable: false },
+    { headerName: 'Action Taken', field: 'Action_Taken', sortable: true, filter: true , editable: false },
+  ]);
+
+  rowData = computed(() => {
+    console.log("Row data: ", this.selectedBGifts());
+    return this.selectedBGifts()
+  });
 
   is_admin: Signal<boolean> = computed(() => this.authService.is_admin());
 
@@ -87,6 +107,11 @@ export class BusinessComponent implements OnInit {
       });
     })
   };
+
+  handleReady($event: any) {
+    console.log("Ag-grid ready");
+    this.rowData();
+  }
 
   handleFromChange(e: any) {
     let selected = e.target.value;

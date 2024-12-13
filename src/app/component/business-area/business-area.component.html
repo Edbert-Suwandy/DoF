@@ -14,30 +14,9 @@
     <button *ngIf="is_admin()" (click)="addHandler()">Add</button>
     <button *ngIf="is_admin()" (click)="renameHandler()">Rename</button>
 </div>
-<table>
-    <thead>
-        <tr>
-            <th>Date of Offer</th>
-            <th>Description of Offer</th>
-            <th>Details of Contract</th>
-            <th>Estimated Gift Value</th>
-            <th>Offered From</th>
-            <th>Offered To</th>
-            <th>Reason for Offer</th>
-            <th>Action Taken</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let gift of selectedBaGifts()">
-            <td>{{gift.Date_of_Offer}}</td>
-            <td>{{gift.Description_of_offer}}</td>
-            <td>{{gift.Details_of_contract}}</td>
-            <td>{{gift.Estimated_Gift_Value}}</td>
-            <td>{{gift.Offered_From}}</td>
-            <td>{{gift.Offered_to}}</td>
-            <td>{{gift.Reason_for_offer}}</td>
-            <td>{{gift.Action_Taken}}</td>
-        </tr>
-    </tbody>
-</table>
-
+<ag-grid-angular
+  style="width: 100%; height: 500px;"
+  [rowData]="rowData()"
+  [columnDefs]="headings()"
+  (gridReady)="handleReady($event)"
+  ></ag-grid-angular>

@@ -3,12 +3,15 @@ import { DataService } from '../../service/data.service';
 import { Ba, BaForm, Gift} from '../../model/type';
 import { AuthService } from '../../service/auth.service';
 import { NgForOf, NgIf } from '@angular/common';
+import { ColDef, AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
 
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-business-area',
   standalone: true,
-  imports: [NgForOf, NgIf],
+  imports: [NgForOf, NgIf, AgGridAngular],
   templateUrl: './business-area.component.html',
   styleUrl: './business-area.component.css'
 })
@@ -21,10 +24,27 @@ export class BusinessAreaComponent implements OnInit {
 
   is_admin: Signal<boolean> = computed(() => this.authService.is_admin());
 
+  rowData = computed(() => {
+    console.log("Row data: ", this.selectedBaGifts());
+    return this.selectedBaGifts()
+  });
+  headings:Signal<ColDef[]> = computed(() => [
+    { headerName: 'Date of Offer', field: 'Date_of_Offer', sortable: true, filter: true, editable: false },
+    { headerName: 'Offered To', field: 'Offered_to', sortable: true, filter: true, editable: false },
+    { headerName: 'Offered From', field: 'Offered_From', sortable: true, filter: true, editable: false },
+    { headerName: 'Description of offer', field: 'Description_of_offer', sortable: false, filter: false, editable: false },
+    { headerName: 'Reason of offer', field: 'Reason_for_offer', sortable: false, filter: false, editable: false },
+    { headerName: 'Details of contract', field: 'Details_of_contract', sortable: false, filter: false, editable: false },
+    { headerName: 'Estimated Gift Value', field: 'Estimated_Gift_Value', sortable: true, filter: true, editable: false },
+    { headerName: 'Action Taken', field: 'Action_Taken', sortable: true, filter: true , editable: false },
+  ]);
+
   constructor(private dataService: DataService, private authService: AuthService) { }
 
   ngOnInit(): void {
+    console.log("BusinessArea component initialized");
     this.dataService.listBusinessArea().subscribe((ba: BaForm[]) => {
+      console.log("Business areas fetched: ", ba);
       this.allBa.set(ba);
       this.dataService.getBusinessArea(ba[0].Business_Area, this.from(), this.to()).subscribe((ba: Ba) => {
         if (JSON.stringify(ba) === "{}") {
@@ -34,15 +54,19 @@ export class BusinessAreaComponent implements OnInit {
         ba.Gifts.forEach((gift) => {
           gift.Date_of_Offer = new Date(gift.Date_of_Offer).toLocaleDateString();
         });
+        console.log("Selected business area: ", ba);
+        console.log("Selected business area gifts: ", ba.Gifts);
         this.selectedBaName.set(ba.Business_Area);
         this.selectedBaGifts.set(ba.Gifts);
       });
     });
   }
 
+
+
   handleSelectionChange(event: any) {
     const selected = event.target.value;
-    console.log(selected);
+    console.log("Selected business area: ", selected);
     this.dataService.getBusinessArea(selected, this.from(), this.to()).subscribe((ba: Ba) => {
       if (JSON.stringify(ba) === "{}") {
         this.selectedBaGifts.set([]);
@@ -53,12 +77,8 @@ export class BusinessAreaComponent implements OnInit {
       });
       this.selectedBaName.set(ba.Business_Area);
       this.selectedBaGifts.set(ba.Gifts);
+    this.handleReady("");
     });
-  }
-
-  editHandler(e: any) {
-    console.log('Edit gift with hash:',);
-    // Implement edit logic here
   }
 
   renameHandler() {
@@ -72,6 +92,7 @@ export class BusinessAreaComponent implements OnInit {
 
     this.dataService.renameBa(this.selectedBaName(), new_name, token).subscribe(() => {
       this.dataService.listBusinessArea().subscribe((ba: BaForm[]) => {
+        console.log("Business areas fetched after rename: ", ba);
         this.allBa.set(ba);
         this.dataService.getBusinessArea(new_name, this.from(), this.to()).subscribe((ba: Ba) => {
           if (JSON.stringify(ba) === "{}") {
@@ -90,6 +111,11 @@ export class BusinessAreaComponent implements OnInit {
   
   addHandler() {
     console.log('Adding gift to: ', this.selectedBaName());
+  }
+
+  handleReady($event: any) {
+    console.log("Ag-grid ready");
+    this.rowData();
   }
 
   handleFromChange(e: any) {
