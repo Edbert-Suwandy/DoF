@@ -1,25 +1,8 @@
-
 <nav>
-    <p>{{ title() }}</p>
-    <button *ngIf="!isPopupVisible() && !is_logged_in()" (click)="togglePopup()">Login</button>
+    <button *ngIf="!is_logged_in()" (click)="openDialog()">Login</button>
     <button *ngIf="is_logged_in()" (click)="logoutHander()"> logout from {{ username() }} </button>
-    <form *ngIf="is_admin()" (submit)="uploadCsvHandler($event)" >
+    <form *ngIf="is_admin()" (submit)="uploadCsvHandler($event)">
         <input type="file" name="csv_file">
-      <button>Upload CSV</button>
+        <button>Upload CSV</button>
     </form>
 </nav>
-
-<div class="popup" *ngIf="isPopupVisible() && !is_logged_in()">
-    <div class="popup-content">
-      <form (submit)="loginHandler($event)">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required />
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-        
-        <button type="submit">Submit</button>
-        <button type="button" (click)="togglePopup()">Cancel</button>
-      </form>
-    </div>
-</div>

@@ -30,6 +30,17 @@ export type Gift = {
     hash: string
 }
 
+export type GiftInput = {
+    Date_of_Offer: string
+    Offered_to: string
+    Offered_From: string
+    Description_of_offer: string
+    Reason_for_offer: string
+    Details_of_contract: string
+    Estimated_Gift_Value: string
+    Action_Taken: string
+}
+
 export type BaForm = {
     Business_Area: string;
 }

@@ -1,22 +1,19 @@
 <div>
     <form>
-        <label for="search">Member Name: </label>
+        <label for="search" style="margin-right: 10px;">Member Name: </label>
         <select (change)="handleSelectionChange($event)">
             <option *ngFor="let ba of allBa()">{{ba.Business_Area}}</option>
         </select>
-    </form>
-    <form>
-        <label for="from">from: </label>
+        <label for="from" style="margin-right: 10px;">from: </label>
         <input type="date" (change)="handleFromChange($event)">
-        <label for="to">to: </label>
+        <label for="to" style="margin-right: 10px;">to: </label>
         <input type="date" (change)="handleToChange($event)">
+        <button *ngIf="is_admin()" (click)="renameHandler()">Rename</button>
     </form>
-    <button *ngIf="is_admin()" (click)="addHandler()">Add</button>
-    <button *ngIf="is_admin()" (click)="renameHandler()">Rename</button>
 </div>
 <ag-grid-angular
   style="width: 100%; height: 500px;"
   [rowData]="rowData()"
   [columnDefs]="headings()"
-  (gridReady)="handleReady($event)"
-  ></ag-grid-angular>
+  (gridReady)="handleReady($event)">
+</ag-grid-angular>

@@ -11,7 +11,7 @@
         <label for="search">to: </label>
         <input type="date" (change)="handleToChange($event)">
     </form>
-    <button *ngIf="is_admin()">Add New</button>
+    <button *ngIf="is_admin()" (click)="addNewHandler()">Add New</button>
     <button *ngIf="is_admin()" (click)="deleteHandler()">Delete Member</button>
 </div>
 <ag-grid-angular

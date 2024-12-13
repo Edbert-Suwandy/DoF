@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MemberForm, Ba, Member, BaForm, BusinessForm, Business } from '../model/type';
+import { MemberForm, Ba, Member, BaForm, BusinessForm, Business, Gift, GiftInput } from '../model/type';
 import { baseUrl } from '../app.global';
-import { defaultEquals } from '@angular/core/primitives/signals';
 
 @Injectable({
   providedIn: 'root'
@@ -108,4 +107,25 @@ export class DataService {
     return this.http.patch(`${this.url}/business/${old_name}/rename?new_name=${new_name}`, {}, { headers });
   }
 
+  addGift(gift:GiftInput,member_id:string, token: string) {
+    token = token.trim();
+    console.log("Adding gift");
+    let formData = new FormData();
+
+    let formatedDate = gift.Date_of_Offer.split('-');
+    formatedDate = formatedDate.reverse();
+    gift.Date_of_Offer = formatedDate.join('/');
+
+    formData.append("Date_of_Offer", gift.Date_of_Offer);
+    formData.append("Offered_to", gift.Offered_to);
+    formData.append("Offered_From", gift.Offered_From);
+    formData.append("Description_of_Offer", gift.Description_of_offer);
+    formData.append("Reason_for_offer", gift.Reason_for_offer);
+    formData.append("Details_of_contract", gift.Details_of_contract);
+    formData.append("Estimated_Gift_Value", gift.Estimated_Gift_Value);
+    formData.append("Action_Taken", gift.Action_Taken);
+
+    const headers = new HttpHeaders().set("x-access-header", token);
+    return this.http.put(`${this.url}/member/${member_id}/gift/put`, formData, { headers });
+  }
 }

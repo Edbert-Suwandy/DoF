@@ -1,0 +1,8 @@
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav p, nav button, nav form {
+    margin-right: 10px;
+}

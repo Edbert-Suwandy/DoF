@@ -1,0 +1,10 @@
+<form>
+    <div *ngFor="let type of fields">
+        <label [for]="type.label">{{ type.label }}</label>
+        <br>
+        <input type="{{ type.type }}" name="{{ type.name }}" required />
+        <br>
+    </div>
+    <button (click)="handler($event)">Submit</button>
+</form>
+

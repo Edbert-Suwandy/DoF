@@ -6,6 +6,8 @@ import { MemberForm, Gift, Member } from '../../model/type';
 import { NgForOf, NgIf } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community';
+import { LoginComponent } from '../login/login.component';
+import { MatDialog } from '@angular/material/dialog';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -59,7 +61,7 @@ export class MembersComponent implements OnInit {
 
   is_admin: Signal<boolean> = computed(() => this.authService.is_admin());
 
-  constructor(private dataService: DataService, private authService: AuthService) {}
+  constructor(private dataService: DataService, private authService: AuthService, private dialog:MatDialog) {}
 
   ngOnInit(): void {
     console.log("Members component initialized");
@@ -147,6 +149,46 @@ export class MembersComponent implements OnInit {
     console.log(event.data.hash);
 
     this.editHandler(field, event.data[field], event.data.hash);
+  }
+
+  addNewHandler() {
+    this.dialog.open(LoginComponent, {
+      data: {
+        fields: [
+          {name: "Date_of_Offer", type: 'date', label: 'Date of Offer'},
+          {name: "Offered_to", type: 'text', label: 'Offered To'},
+          {name: "Offered_From", type: 'text', label: 'Offered From'},
+          {name: "Description_of_offer", type: 'text', label: 'Description of offer'},
+          {name: "Reason_for_offer", type: 'text', label: 'Reason for offer'},
+          {name: "Details_of_contract", type: 'text', label: 'Details of contract'},
+          {name: "Estimated_Gift_Value", type: 'number', label: 'Estimated Gift Value'},
+          {name: "Action_Taken", type: 'text', label: 'Action Taken'},
+        ],
+        func: this.addGift.bind(this)
+      },
+    })
+  }
+
+  addGift(event: any) {
+    //prevent default
+    event.preventDefault();
+    console.log(event);
+    let token = this.authService.get_cookie('token');
+    let member_id = this.selectedMemberId();
+    let gift = {
+      Date_of_Offer: event.target.form.Date_of_Offer.value,
+      Offered_to: event.target.form.Offered_to.value,
+      Offered_From: event.target.form.Offered_From.value,
+      Description_of_offer: event.target.form.Description_of_offer.value,
+      Reason_for_offer: event.target.form.Reason_for_offer.value,
+      Details_of_contract: event.target.form.Details_of_contract.value,
+      Estimated_Gift_Value: event.target.form.Estimated_Gift_Value.value,
+      Action_Taken: event.target.form.Action_Taken.value,
+    };
+    this.dataService.addGift(gift,member_id,token).subscribe(() => {
+      alert('Gift added');
+      // this.ngOnInit();
+    });
   }
 
   editHandler(field: string, new_value: string, hash: string) {

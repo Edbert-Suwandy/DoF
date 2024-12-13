@@ -111,7 +111,7 @@ export class BusinessComponent implements OnInit {
   handleReady($event: any) {
     console.log("Ag-grid ready");
     this.rowData();
-  }
+  } 
 
   handleFromChange(e: any) {
     let selected = e.target.value;

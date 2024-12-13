@@ -1,8 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../service/auth.service';
 import { OnInit } from '@angular/core';
 import { DataService } from '../../service/data.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginComponent, form } from '../login/login.component';
+
 
 @Component({
   selector: 'app-navbar',
@@ -14,44 +17,56 @@ import { DataService } from '../../service/data.service';
 export class NavbarComponent implements OnInit {
   title = signal('DoF Registy');
   isPopupVisible = signal(false);
-  is_logged_in = signal(false);
-  is_admin = signal(false);
-  is_sudo = signal(false);
-  username = signal('');
+  is_logged_in = computed(() => this.authService.is_logged_in());
+  is_admin = computed(() => this.authService.is_admin());
+  is_sudo = computed(() => this.authService.is_sudo());
+  username = computed(() => this.authService.username());
 
-  constructor (private authService: AuthService, private dataService: DataService) {
+  constructor (private authService: AuthService, private dataService: DataService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.is_logged_in.set(this.authService.is_logged_in());
-    this.is_admin.set(this.authService.is_admin());
-    this.is_sudo.set(this.authService.is_sudo());
-    this.username.set(this.authService.username());
+    this.is_admin();
+    this.is_sudo();
+    this.username();
+    this.is_logged_in();
+  }
+
+  openDialog() {
+    this.dialog.open(LoginComponent, {
+      data: {
+        fields: [
+          {name: "username", type: 'text', label: 'Username'},
+          {name: "password", type: 'password', label: 'Password'}
+        ],
+        func: this.loginFunc.bind(this)
+      },
+    });
   }
 
   togglePopup() {
     this.isPopupVisible.set(!this.isPopupVisible())
   }
 
-  loginHandler(form: any) {
-    form.preventDefault();
+  loginFunc(event: any) {
+    event.preventDefault();
+    this.authService.login(event.target.form.username.value, event.target.form.password.value)
+    this.is_admin();
+    this.is_sudo();
+    this.username();
+    this.is_logged_in();
 
-    this.authService.login(form.target.username.value, form.target.password.value)
-
-    this.is_admin.set(this.authService.is_admin());
-    this.is_sudo.set(this.authService.is_sudo());
-    this.username.set(this.authService.username());
-    this.is_logged_in.set(this.authService.is_logged_in());
+    this.dialog.closeAll();
   }
 
-  logoutHander() {
+   logoutHander(){
     let token = this.authService.get_cookie('token');
     this.authService.logout(token);
 
-    this.is_admin.set(this.authService.is_admin());
-    this.is_sudo.set(this.authService.is_sudo());
-    this.username.set(this.authService.username());
-    this.is_logged_in.set(this.authService.is_logged_in());
+    this.is_admin();
+    this.is_sudo();
+    this.username();
+    this.is_logged_in();
   }
 
   uploadCsvHandler(form: any) {
